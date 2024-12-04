@@ -1,177 +1,190 @@
-import React, { useState } from "react";
-import axios from "axios";
-import "./App.css";
+import React from "react";
+import { Routes, Route, Link, useNavigate, data } from "react-router-dom";
+import AddBook from "./AddBook";
+import GetBooks from "./GetBooks";
+import UpdateBook from "./UpdateBook";
+import RemoveBook from "./RemoveBook";
+import GetBookById from "./GetBookById";
+import { message } from "antd";
+import { useLocation } from "react-router-dom";
+import { useEffect } from "react";
 
 const Book = () => {
-  let [title, seTitle] = useState();
-  let [pyear, setPyear] = useState();
-  let [author, setAuthor] = useState();
-  let [books, setBooks] = useState([]);
-  let [isbn, setIsbn] = useState();
-  let [book, setBook] = useState();
-  let [error, setError] = useState();
+  const navigate = useNavigate();
+  const location = useLocation();
+  const [username, setUsername] = React.useState("");
 
-  const addBook = () => {
-    let data = { title, publicationYear: pyear, author };
-    let token = localStorage.getItem("token");
-    axios
-      .post("http://localhost:8080/api/admin/addNewBook", data, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
-        },
-      })
-      .then((res) => {
-        alert("book added");
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  };
+  useEffect(() => {
+    if (location.state && location.state.username) {
+      const email = location.state.username;
+      const name = email.split("@")[0];
+      const formattedName = name.charAt(0).toUpperCase() + name.slice(1);
 
-  const getBooks = () => {
-    let token = localStorage.getItem("token");
-    axios
-      .get("http://localhost:8080/api/admin/getBooks", {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
-        },
-      })
-      .then((res) => {
-        setBooks(res.data);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  };
+      setUsername(formattedName);
+    }
+  }, [location.state]);
 
-  const removeBook = () => {
-    let token = localStorage.getItem("token");
-
-    axios
-      .delete(`http://localhost:8080/api/admin/removeBook/${isbn}`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      })
-      .then((res) => alert("book removed"))
-      .catch((e) => console.log(e));
-  };
-
-  const updateBook = () => {
-    let token = localStorage.getItem("token");
-
-    axios
-      .put(
-        `http://localhost:8080/api/admin/updateBook/${isbn}/${title}`,
-        {},
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      )
-      .then((res) => alert("Book updated successfully!"))
-      .catch((e) => {
-        console.error("Error updating book:", e);
-        alert("Failed to update book. Please try again.");
-      });
-  };
-
-  const getBookById = () => {
-    console.log("Getbookbyid initiated");
-
-    let token = localStorage.getItem("token");
-
-    axios
-      .get(`http://localhost:8080/api/admin/getBookById/${isbn}`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      })
-      .then((res) => {
-        console.log("Response from API:", res.data);
-        setBook(res.data);
-      })
-      .catch((err) => console.log(err));
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    sessionStorage.removeItem("flag");
+    message.success("Logout Successful");
+    navigate("/");
   };
 
   return (
-    <>
-      <div className="container">
-        <br />
-        <br />
-        <input
-          type="text"
-          placeholder="Enter title"
-          onChange={(e) => seTitle(e.target.value)}
-        />
-
-        <br />
-        <br />
-        <input
-          type="text"
-          placeholder="Enter year"
-          onChange={(e) => setPyear(e.target.value)}
-        />
-
-        <br />
-        <br />
-        <input
-          type="text"
-          placeholder="Enter author"
-          onChange={(e) => setAuthor(e.target.value)}
-        />
-
-        <br />
-        <br />
-        <input
-          type="number"
-          placeholder="Enter ISBN"
-          onChange={(e) => setIsbn(e.target.value)}
-        />
-
-        <br />
-        <button onClick={addBook}> Add book </button>
-        <br />
-        <br />
-        <button onClick={getBooks}> Get books </button>
-        <br />
-        <br />
-        <button onClick={removeBook}> Remove book </button>
-        <br />
-        <br />
-        <button onClick={updateBook}> Update book </button>
-        <br />
-        <br />
-        <button onClick={getBookById}> Get book by id </button>
-        {error && <p style={{ color: "red" }}>{error}</p>}
-
-        {book && (
-          <div>
-            <h4>Title: {book.title}</h4>
-            <h4>Author: {book.author}</h4>
-            <h4>Publication Year: {book.publicationYear}</h4>
-          </div>
-        )}
+    <div
+      style={{
+        display: "flex",
+        height: "100vh",
+        fontFamily: "Arial, sans-serif",
+      }}
+    >
+      {/* Sidebar Navigation */}
+      <div
+        style={{
+          width: "250px",
+          background: "#333",
+          color: "#fff",
+          padding: "20px",
+          boxShadow: "2px 0 5px rgba(0,0,0,0.1)",
+        }}
+      >
+        <h2
+          style={{
+            color: "#f4b400",
+            textAlign: "center",
+            marginBottom: "30px",
+          }}
+        >
+          Welcome, {username || "Guest"}!
+        </h2>
+        <nav>
+          <ul style={{ listStyle: "none", padding: 0, margin: 0 }}>
+            <li style={{ marginBottom: "15px" }}>
+              <Link
+                to="/book/add-book"
+                style={{
+                  textDecoration: "none",
+                  color: "#fff",
+                  padding: "10px",
+                  display: "block",
+                  borderRadius: "5px",
+                  transition: "background 0.3s",
+                }}
+                onMouseOver={(e) => (e.target.style.background = "#444")}
+                onMouseOut={(e) => (e.target.style.background = "none")}
+              >
+                Add Book
+              </Link>
+            </li>
+            <li style={{ marginBottom: "15px" }}>
+              <Link
+                to="/book/get-books"
+                style={{
+                  textDecoration: "none",
+                  color: "#fff",
+                  padding: "10px",
+                  display: "block",
+                  borderRadius: "5px",
+                  transition: "background 0.3s",
+                }}
+                onMouseOver={(e) => (e.target.style.background = "#444")}
+                onMouseOut={(e) => (e.target.style.background = "none")}
+              >
+                Get All Books
+              </Link>
+            </li>
+            <li style={{ marginBottom: "15px" }}>
+              <Link
+                to="/book/update-book"
+                style={{
+                  textDecoration: "none",
+                  color: "#fff",
+                  padding: "10px",
+                  display: "block",
+                  borderRadius: "5px",
+                  transition: "background 0.3s",
+                }}
+                onMouseOver={(e) => (e.target.style.background = "#444")}
+                onMouseOut={(e) => (e.target.style.background = "none")}
+              >
+                Update Book
+              </Link>
+            </li>
+            <li style={{ marginBottom: "15px" }}>
+              <Link
+                to="/book/remove-book"
+                style={{
+                  textDecoration: "none",
+                  color: "#fff",
+                  padding: "10px",
+                  display: "block",
+                  borderRadius: "5px",
+                  transition: "background 0.3s",
+                }}
+                onMouseOver={(e) => (e.target.style.background = "#444")}
+                onMouseOut={(e) => (e.target.style.background = "none")}
+              >
+                Remove Book
+              </Link>
+            </li>
+            <li style={{ marginBottom: "15px" }}>
+              <Link
+                to="/book/get-book-by-id"
+                style={{
+                  textDecoration: "none",
+                  color: "#fff",
+                  padding: "10px",
+                  display: "block",
+                  borderRadius: "5px",
+                  transition: "background 0.3s",
+                }}
+                onMouseOver={(e) => (e.target.style.background = "#444")}
+                onMouseOut={(e) => (e.target.style.background = "none")}
+              >
+                Get Book by ID
+              </Link>
+            </li>
+          </ul>
+        </nav>
+        <button
+          onClick={handleLogout}
+          style={{
+            marginTop: "20px",
+            width: "100%",
+            padding: "10px",
+            backgroundColor: "#d9534f",
+            color: "#fff",
+            border: "none",
+            borderRadius: "5px",
+            cursor: "pointer",
+            transition: "background 0.3s",
+          }}
+          onMouseOver={(e) => (e.target.style.backgroundColor = "#c9302c")}
+          onMouseOut={(e) => (e.target.style.backgroundColor = "#d9534f")}
+        >
+          Logout
+        </button>
       </div>
 
-      <div className="container-books">
-        {books.map((book) => {
-          return (
-            <div key={book.isbn}>
-              <h4>ISBN: {book.isbn}</h4>
-              <h4>Title: {book.title}</h4>
-              <h4>Author: {book.author}</h4>
-              <h4>Published Year: {book.publicationYear}</h4>
-              <br />
-              <h3>---------------------------------------</h3>
-            </div>
-          );
-        })}
+      {/* Main Content */}
+      <div
+        style={{
+          flex: 1,
+          padding: "20px",
+          background: "#f8f9fa",
+          overflowY: "auto",
+        }}
+      >
+        <Routes>
+          <Route path="add-book" element={<AddBook />} />
+          <Route path="get-books" element={<GetBooks />} />
+          <Route path="update-book" element={<UpdateBook />} />
+          <Route path="remove-book" element={<RemoveBook />} />
+          <Route path="get-book-by-id" element={<GetBookById />} />
+        </Routes>
       </div>
-    </>
+    </div>
   );
 };
 
