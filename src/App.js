@@ -5,7 +5,6 @@ import Login from "./Login";
 import Book from "./Book";
 import Protected from "./Protected";
 import Home from "./Home";
-import HolidayCalendar from "./Calendar";
 
 const App = () => {
   return (
@@ -14,7 +13,6 @@ const App = () => {
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
-        <Route path="/calendar" element={<HolidayCalendar />} />
         <Route path="/book/*" element={<Protected Component={Book} />} />
       </Routes>
     </Router>
