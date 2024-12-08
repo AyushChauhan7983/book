@@ -98,3 +98,74 @@
   flex-direction: column;
   justify-content: center;
 }
+
+Center holiday text within the calendar tile .holiday-tile {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start; /* Align text at the top consistently */
+  align-items: center;
+  color: #ff6347; /* Holiday name color */
+  font-weight: bold;
+  font-size: 0.8rem;
+  text-align: center;
+  height: 100%; /* Ensure it fills the tile completely */
+  padding: 5px 0; /* Add space between holiday name and the edge */
+}
+
+.react-calendar__tile {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start; /* Align content consistently */
+  align-items: center;
+  height: 80px; /* Ensure consistent height for tiles */
+}
+
+.holiday-name {
+  margin-top: auto; /* Push holiday name to the bottom */
+}
+
+.ant-modal-header {
+  background-color: #f0f2f5;
+  color: #1890ff;
+  font-weight: bold;
+  text-align: center;
+}
+
+.ant-modal-footer {
+  display: none; /* Hide the default footer (extra button) */
+}
+
+.ant-calendar {
+  border: 1px solid #f0f2f5;
+  border-radius: 10px;
+}
+
+.ant-calendar-tile {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 8px;
+}
+
+.ant-btn-primary {
+  background-color: #1890ff;
+  border-color: #1890ff;
+}
+
+.ant-btn-primary:hover {
+  background-color: #40a9ff;
+  border-color: #40a9ff;
+}
+
+.holiday-calendar {
+  width: 100%;
+}
+
+.ant-modal-body {
+  padding: 0 !important; /* Ensure no padding is applied */
+}
+
+.ant-calendar {
+  border: none; /* Remove any unnecessary borders */
+  width: 100%; /* Stretch the calendar to full width */
+}

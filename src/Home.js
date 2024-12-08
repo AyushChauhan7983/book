@@ -1,4 +1,5 @@
 import { useNavigate } from "react-router-dom";
+import HolidayCalendar from "./Calendar";
 
 const Home = () => {
   let nav = useNavigate();
@@ -18,12 +19,10 @@ const Home = () => {
             top of your reading goals and never lose track of your favorite
             books.
           </p>
-          <div className="flex justify-center sm:justify-start">
+          <div className="flex justify-center sm:justify-start gap-4">
             <button
               className="bg-green-500 text-white text-2xl font-medium px-6 py-3 rounded shadow hover:bg-green-700 transition-all"
-              onClick={() => {
-                nav("/login");
-              }}
+              onClick={() => nav("/login")}
             >
               Get Started
             </button>
